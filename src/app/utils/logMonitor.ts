@@ -1,7 +1,6 @@
 import fs from 'fs';
-import { storeLog } from '../services/logService';  // Ensure the path to your logService is correct
+import { storeLog } from '../services/logService'; 
 
-// Helper function to determine severity
 const inferSeverity = (logLine: string): string => {
   if (logLine.toLowerCase().includes('error')) {
     return 'error';
@@ -10,7 +9,7 @@ const inferSeverity = (logLine: string): string => {
   } else if (logLine.toLowerCase().includes('fatal')) {
     return 'fatal';
   } else {
-    return 'info'; // Default to info
+    return 'info'; 
   }
 };
 
@@ -23,11 +22,11 @@ export const watchLogs = (logFilePath: string) => {
 
     const logData = {
       message: logLine,
-      severity: severity, // Set severity
+      severity: severity, 
       timestamp: new Date().toISOString()
     };
 
-    await storeLog(logData);  // Using the existing `storeLog` function
+    await storeLog(logData); 
   });
 
   logStream.on('error', (err) => {

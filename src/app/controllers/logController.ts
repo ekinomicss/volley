@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import { storeLog } from '../services/logService';
-import { getOldLogs } from '../services/diffCheck';
-import { detectLogDifferences } from '../utils/diffUtil';
+import { getOldLogs, detectLogDifferences } from '../services/diffCheck';
 import { notifySlack } from '../services/slackService';  
 
 export const createLog = async (req: Request, res: Response) => {

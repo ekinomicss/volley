@@ -1,12 +1,11 @@
 import { IncomingWebhook } from '@slack/webhook';
-import { Log } from '../types/Log';  // Adjust the import path as needed
-import { getDeploymentInfo } from './deploymentService';  // A service that gets deployment info
-import { detectLogDifferences } from './diffCheck';       // Existing diff detection logic
+import { Log } from '../types/Log';  
+import { getDeploymentInfo } from './deploymentService';  
+import { detectLogDifferences } from './diffCheck';       
 import dotenv from 'dotenv';
 
-dotenv.config(); // Load environment variables
+dotenv.config(); 
 
-// Set up Slack Webhook URL
 const url = process.env.SLACK_WEBHOOK_URL;
 const webhook = new IncomingWebhook(url!);  // The `!` asserts that the URL is defined
 

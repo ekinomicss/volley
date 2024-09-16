@@ -3,5 +3,4 @@ export interface Log {
     timestamp: Date;
     message: string;
     severity: string;
-    // Add other relevant properties
 }
