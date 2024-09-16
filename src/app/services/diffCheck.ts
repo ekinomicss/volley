@@ -5,6 +5,7 @@ const client = new Client({ node: process.env.ELASTICSEARCH_URL || 'http://local
 export interface Log {
   timestamp: Date;
   message: string;
+  severity: string;
 }
 
 export const getOldLogs = async (query: any): Promise<Log[]> => {
@@ -20,6 +21,7 @@ export const getOldLogs = async (query: any): Promise<Log[]> => {
   // Map Elasticsearch hits to your custom Log structure
   return result.hits.hits.map((hit: any) => ({
     message: hit._source.message,
+    severity: hit._source.severity,
     timestamp: hit._source.timestamp
   }));
 };

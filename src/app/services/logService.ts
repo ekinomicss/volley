@@ -10,7 +10,8 @@ export const storeLog = async (logData: any) => {
 
 const structuredLog = {
     timestamp: new Date().toISOString(), 
-    message: logData.message || 'No message provided'
+    message: logData.message || 'No message provided',
+    severity: logData.severity || 'No severity provided'
     };
 
   const response = await client.index({
