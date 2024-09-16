@@ -22,10 +22,10 @@ export const notifySlack = async (newLogs: Log[], diffs: string[]) => {
 	const diffSummary = diffs.join('\n');
 
 	const message = `
-		🚨 Volley AI Log Analysis:
+		🚨 <!here> *Volley AI* 
 		
-		${errorLogs.length > 0 ? `Error Logs:\n${errorSummary}\n\n` : ''}
-		${diffs.length > 0 ? `Log Differences:\n${diffSummary}` : ''}
+		${errorLogs.length > 0 ? `*❗ Error Logs:*\n${errorSummary}\n\n` : ''}
+		${diffs.length > 0 ? `*🤖 AI Suggestion:*\n${diffSummary}` : ''}
 	`;
 
 	try {

@@ -46,7 +46,7 @@ export async function analyzeLogHistory(newLogs: Log[], oldLogs: Log[]): Promise
     return "No significant differences found between new and old logs.";
   }
 
-  const prompt = `Analyze the following log differences and identify which log likely caused the error message. Consider the severity and content of the logs:
+  const prompt = `Analyze the following log differences and identify which log likely caused the error message. 
 
     ${diffs.map(diff => `
     Old Log:
@@ -60,11 +60,11 @@ export async function analyzeLogHistory(newLogs: Log[], oldLogs: Log[]): Promise
     Message: ${diff.newLog.message}
     `).join('\n')}
 
-    Which log entry is most likely to have caused an error, and why? Answer in maximum 3 sentences.`;
+    Which log entry is most likely to have caused an error, and why? Answer in maximum 3 sentences. Keep it concise. Use bullet points and try to point to a specific deploy.`;
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
+      model: "gpt-4o",
       messages: [{ role: "user", content: prompt }],
     });
 
