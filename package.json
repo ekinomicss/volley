@@ -1,6 +1,7 @@
 {
   "name": "volley",
   "version": "1.0.0",
+  "type": "module",
   "description": "Regression auto-detect tool",
   "main": "index.js",
   "scripts": {
