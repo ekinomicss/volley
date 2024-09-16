@@ -1,3 +1,4 @@
+require('dotenv').config();
 import { storeLog } from '../src/app/services/logService';
 
 test('should store log in Elasticsearch', async () => {
