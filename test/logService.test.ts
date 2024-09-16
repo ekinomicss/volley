@@ -20,26 +20,29 @@ test('should fetch GitHub Actions logs, detect differences, and notify Slack', a
     const storedLogs = await getOldLogs({ message: 'log' });
     expect(storedLogs.length).toBeGreaterThan(0);
     
-    // Step 3: Use the first fetched log as the new log
-    const newLog = fetchedLogs[0];
+    // Step 3: Get the most recent 10 logs and find any error logs
+    const recentLogs = fetchedLogs.slice(0, 10);
+    const errorLogs = recentLogs.filter(log => log.severity === 'error');
     
     // Step 4: Detect differences
-    const differences = detectLogDifferences([newLog], storedLogs);
+    const differences = detectLogDifferences(errorLogs, storedLogs);
 
     // Step 5: Notify Slack
     const consoleLogSpy = jest.spyOn(console, 'log');
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
-    await notifySlack([newLog], storedLogs);
+    await notifySlack(errorLogs);
 
     // Step 6: Assert Slack notification result
-    expect(consoleLogSpy).toHaveBeenCalledWith('Slack notification sent.');
+    if (errorLogs.length > 0) {
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('error logs'));
+    } else {
+        expect(consoleLogSpy).toHaveBeenCalledWith('No error logs found. Skipping Slack notification.');
+    }
     expect(consoleErrorSpy).not.toHaveBeenCalled();
-
-    // Additional check to ensure logs are included in the notification
-    // expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining(expectedLogMessage));
 
     // Clean up spies
     consoleLogSpy.mockRestore();
     consoleErrorSpy.mockRestore();
 }, 60000); // Increase timeout to allow for API calls and log processing
+

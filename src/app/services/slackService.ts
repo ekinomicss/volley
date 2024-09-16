@@ -1,47 +1,38 @@
 import { IncomingWebhook } from '@slack/webhook';
 import { Log } from '../types/Log';
 import dotenv from 'dotenv';
-import { detectLogDifferences } from './diffCheck';
 
 dotenv.config();
 
 const url = process.env.SLACK_WEBHOOK_URL;
 const webhook = new IncomingWebhook(url!);
 
-export const notifySlack = async (newLogs: Log[], oldLogs: Log[]) => {
-	const differences = detectLogDifferences(newLogs, oldLogs);
+export const notifySlack = async (newLogs: Log[]) => {
+	const errorLogs = newLogs.filter(log => log.severity.toLowerCase() === 'error');
 
-	const logsSummary = newLogs.map(log => 
+	if (errorLogs.length === 0) {
+		console.log('No error logs found. Skipping Slack notification.');
+		return;
+	}
+
+	const errorSummary = errorLogs.map(log => 
 		`[${log.severity.toUpperCase()}] ${log.timestamp}: ${log.message}`
 	).join('\n');
 
-	const diffsSummary = differences.map(diff => 
-		`Old: [${diff.oldLog?.severity?.toUpperCase() ?? 'N/A'}] ${diff.oldLog?.timestamp ?? 'N/A'}: ${diff.oldLog?.message ?? 'N/A'}\n` +
-		`New: [${diff.newLog?.severity?.toUpperCase() ?? 'N/A'}] ${diff.newLog?.timestamp ?? 'N/A'}: ${diff.newLog?.message ?? 'N/A'}`
-	).join('\n\n');
-
 	const message = `
-		📊 GitHub Actions Logs Summary:
+		🚨 GitHub Actions Error Logs:
 		
-		${logsSummary}
-		
-		🔄 Log Differences:
-		${diffsSummary}
+		${errorSummary}
 	`;
 
 	try {
 		await webhook.send({
 			text: message
 		});
-		console.log('Slack notification sent.');
+		console.log('Slack notification sent with error logs.');
 	} catch (error) {
 		console.error('Error sending Slack message:', error);
 	}
 };
 
-function sendSlackNotification(message: string) {
-  // Ensure the full log message is included in the Slack notification
-  const slackMessage = `New log detected:\n\`\`\`\n${message}\n\`\`\``;
-  console.log(slackMessage); // This should now log the full message
-  // ... rest of the function
-}
+// Remove or comment out the unused sendSlackNotification function

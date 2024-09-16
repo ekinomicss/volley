@@ -16,7 +16,7 @@ export const createLog = async (req: Request, res: Response) => {
 
     // If there are differences (regressions), notify via Slack (or console for now)
     if (diffs.length > 0) {
-      await notifySlack(logData, historicalLogs);  // Print regression info
+      await notifySlack(logData);  // Print regression info
     }
 
     res.status(201).json({ message: 'Log stored successfully', result, diffs });
