@@ -11,10 +11,6 @@ jest.mock('../src/app/services/deploymentService', () => ({
   })
 }));
 
-jest.mock('../src/app/services/slackService', () => ({
-  notifySlack: jest.fn()
-}));
-
 test('should store log, detect differences, and notify Slack', async () => {
     // Step 1: Store an initial log
     const initialLog: Log = { message: 'Initial log', severity: 'notice', timestamp: new Date(2023, 0, 1) };
@@ -34,8 +30,17 @@ test('should store log, detect differences, and notify Slack', async () => {
     const differences = detectLogDifferences([newLog], historicalLogs);
 
     // Step 6: Notify Slack
-    await notifySlack(differences.map(diff => diff.newLog), [newLog]);
+    const consoleLogSpy = jest.spyOn(console, 'log');
+    const consoleErrorSpy = jest.spyOn(console, 'error');
 
-    // Step 7: Assert that Slack was notified
-    expect(notifySlack).toHaveBeenCalledWith(differences.map(diff => diff.newLog), [newLog]);
-});
+    // Update this line to pass both newLog and historicalLogs
+    await notifySlack([newLog], historicalLogs);
+
+    // Step 7: Assert Slack notification result
+    expect(consoleLogSpy).toHaveBeenCalledWith('Slack notification sent.');
+    expect(consoleErrorSpy).not.toHaveBeenCalled();
+
+    // Clean up spies
+    consoleLogSpy.mockRestore();
+    consoleErrorSpy.mockRestore();
+}, 30000); // Increase timeout to allow for API call
