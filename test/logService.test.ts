@@ -1,6 +1,6 @@
 require('dotenv').config();
 import { fetchAndStoreLogs } from '../src/app/services/githubActionsService';
-import { getOldLogs, detectLogDifferences } from '../src/app/services/diffCheck';
+import { getOldLogs, analyzeLogHistory } from '../src/app/services/diffCheck';
 import { notifySlack } from '../src/app/services/slackService';
 import { Log } from '../src/app/types/Log';
 
@@ -25,13 +25,13 @@ test('should fetch GitHub Actions logs, detect differences, and notify Slack', a
     const errorLogs = recentLogs.filter(log => log.severity === 'error');
     
     // Step 4: Detect differences
-    const differences = detectLogDifferences(errorLogs, storedLogs);
+    const analyzedLogHistory = await analyzeLogHistory(errorLogs, storedLogs);
 
     // Step 5: Notify Slack
     const consoleLogSpy = jest.spyOn(console, 'log');
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
-    await notifySlack(errorLogs);
+    const slackResponse = await notifySlack(errorLogs, [analyzedLogHistory]);
 
     // Step 6: Assert Slack notification result
     if (errorLogs.length > 0) {

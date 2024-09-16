@@ -1,6 +1,11 @@
 import { Client } from '@elastic/elasticsearch';
-const client = new Client({ node: process.env.ELASTICSEARCH_URL || 'http://localhost:9200' });
+import OpenAI from 'openai';
+import dotenv from 'dotenv';
 
+dotenv.config();
+
+const client = new Client({ node: process.env.ELASTICSEARCH_URL || 'http://localhost:9200' });
+const openai = new OpenAI({ apiKey: process.env.OPENAI_TOKEN });
 
 export interface Log {
   timestamp: Date;
@@ -26,7 +31,7 @@ export const getOldLogs = async (query: any): Promise<Log[]> => {
   }));
 };
 
-export function detectLogDifferences(newLogs: Log[], oldLogs: Log[]): Array<{ oldLog: Log, newLog: Log }> {
+export async function analyzeLogHistory(newLogs: Log[], oldLogs: Log[]): Promise<string> {
   const diffs: { oldLog: Log, newLog: Log }[] = [];
 
   newLogs.forEach((newLog) => {
@@ -37,5 +42,35 @@ export function detectLogDifferences(newLogs: Log[], oldLogs: Log[]): Array<{ ol
     });
   });
 
-  return diffs;
+  if (diffs.length === 0) {
+    return "No significant differences found between new and old logs.";
+  }
+
+  const prompt = `Analyze the following log differences and identify which log likely caused the error message. Consider the severity and content of the logs:
+
+    ${diffs.map(diff => `
+    Old Log:
+    Timestamp: ${diff.oldLog.timestamp}
+    Severity: ${diff.oldLog.severity}
+    Message: ${diff.oldLog.message}
+
+    New Log:
+    Timestamp: ${diff.newLog.timestamp}
+    Severity: ${diff.newLog.severity}
+    Message: ${diff.newLog.message}
+    `).join('\n')}
+
+    Which log entry is most likely to have caused an error, and why? Answer in maximum 3 sentences.`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    return response.choices[0].message?.content || "Unable to analyze logs.";
+  } catch (error) {
+    console.error("Error calling OpenAI API:", error);
+    return "Error occurred while analyzing logs.";
+  }
 }
