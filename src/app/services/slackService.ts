@@ -1,10 +1,12 @@
-import { IncomingWebhook } from '@slack/webhook';
+// import webhook from '../../config/slackConfig';
 
-const url = process.env.SLACK_WEBHOOK_URL;
-// const webhook = new IncomingWebhook(url);
-
-// export const sendSlackMessage = async (message: string) => {
-//   await webhook.send({
-//     text: message,
-//   });
+// export const sendSlackNotification = async (message: string) => {
+//     try {
+//         await webhook.send({
+//             text: message,
+//         });
+//     } catch (error) {
+//         console.error('Error sending Slack message:', error);
+//         throw error;
+//     }
 // };
