@@ -14,8 +14,8 @@ test('should fetch GitHub Actions logs, detect differences, and notify Slack', a
     const storedLogs = await getOldLogs({ message: 'log' });
     expect(storedLogs.length).toBeGreaterThan(0);
     
-    // Step 3: Get the most recent 10 logs and find any error logs
-    const recentLogs = fetchedLogs.slice(0, 400);
+    // Get the latest 400 logs
+    const recentLogs = fetchedLogs.slice(-400);
     const errorLogs = recentLogs.filter(log => log.severity === 'error');
     
     // Get the most recent timestamp
