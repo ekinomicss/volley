@@ -8,6 +8,6 @@ const router = express.Router();
     Set Up API Route: create a new route in express server for submitting logs.
 */ 
 router.post('/logs', createLog);
-router.post('/api/deploy-trigger', handleDeploy);
+router.post('/api/deploy', handleDeploy);
 
 export default router;
