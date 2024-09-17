@@ -6,7 +6,17 @@ import { Log } from '../types/Log';
 
 export const handleDeploy = async (req: Request, res: Response) => {
   try {
-    const { deployId, deployDetails } = req.body;
+    let deployId, deployDetails;
+
+    // Check if this is a GitHub webhook
+    if (req.headers['x-github-event'] === 'push') {
+      const payload = req.body;
+      deployId = payload.after; // The new commit SHA
+      deployDetails = `Push to ${payload.ref} by ${payload.pusher.name}`;
+    } else {
+      // If it's not a GitHub webhook, use the existing logic
+      ({ deployId, deployDetails } = req.body);
+    }
 
     console.log(`Starting deploy process. Deploy ID: ${deployId}`);
 

@@ -9,5 +9,6 @@ const router = express.Router();
 */ 
 router.post('/logs', createLog);
 router.post('/deploy', handleDeploy);
+router.post('/github-webhook', handleDeploy); // Add this line
 
 export default router;
