@@ -60,7 +60,7 @@ export async function analyzeLogHistory(newLogs: Log[], oldLogs: Log[]): Promise
     Message: ${diff.newLog.message}
     `).join('\n')}
 
-    Which log entry is most likely to have caused an error, and why? Answer in maximum 3 sentences. Keep it concise. Use bullet points and try to point to a specific deploy.`;
+    Which log entry is most likely to have caused an error, and why? Answer in maximum 3 sentences. Keep it concise. Use bullet points and try to point to a specific deploy and/or commit hash.`;
 
   try {
     const response = await openai.chat.completions.create({

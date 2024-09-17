@@ -16,7 +16,7 @@ export const notifySlack = async (newLogs: Log[], diffs: string[]) => {
 	}
 
 	const errorSummary = errorLogs.map(log => 
-		`[${log.severity.toUpperCase()}] ${log.timestamp}: ${log.message}`
+		`[${log.severity.toUpperCase()}]: ${log.message}`
 	).join('\n');
 
 	const diffSummary = diffs.join('\n');

@@ -24,6 +24,18 @@ test('should fetch GitHub Actions logs, detect differences, and notify Slack', a
     const recentLogs = fetchedLogs.slice(0, 400);
     const errorLogs = recentLogs.filter(log => log.severity === 'error');
     
+    // Get the most recent timestamp
+    const mostRecentTimestamp = recentLogs.reduce((max, log) => {
+        return new Date(log.timestamp) > new Date(max) ? log.timestamp : max;
+    }, recentLogs[0]?.timestamp || '');
+
+    // Convert to Date object and round to the nearest minute
+    const mostRecentDeployTimestamp = new Date(mostRecentTimestamp);
+    mostRecentDeployTimestamp.setSeconds(0, 0); // Set seconds and milliseconds to 0
+
+    // Use mostRecentDeployTimestamp for filtering
+    const recentErrorLogs = errorLogs.filter(log => new Date(log.timestamp) > mostRecentDeployTimestamp);
+
     // Step 4: Detect differences
     const analyzedLogHistory = await analyzeLogHistory(errorLogs, storedLogs);
 
@@ -31,7 +43,7 @@ test('should fetch GitHub Actions logs, detect differences, and notify Slack', a
     const consoleLogSpy = jest.spyOn(console, 'log');
     const consoleErrorSpy = jest.spyOn(console, 'error');
 
-    const slackResponse = await notifySlack(errorLogs, [analyzedLogHistory]);
+    const slackResponse = await notifySlack(recentErrorLogs, [analyzedLogHistory]);
 
     // Step 6: Assert Slack notification result
     if (errorLogs.length > 0) {
