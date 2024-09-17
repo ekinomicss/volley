@@ -1,7 +1,8 @@
 import { Client } from '@elastic/elasticsearch';
 
-const client = new Client({ node: process.env.ELASTICSEARCH_URL });
-
+const client = new Client({
+  node: process.env.ELASTICSEARCH_NODE || 'http://localhost:9200'
+});
 
 /* 
     Store the log data in Elasticsearch 
