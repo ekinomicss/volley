@@ -11,5 +11,5 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 
   // Monitor logs from the open-source repository
-  watchLogs('/path/to/open-source-project/logfile.log');  // Adjust the path to the log file
+  // watchLogs('/path/to/open-source-project/logfile.log');  // Adjust the path to the log file
 });
