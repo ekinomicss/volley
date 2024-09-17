@@ -4,12 +4,6 @@ import { getOldLogs, analyzeLogHistory } from '../src/app/services/diffCheck';
 import { notifySlack } from '../src/app/services/slackService';
 import { Log } from '../src/app/types/Log';
 
-jest.mock('../src/app/services/deploymentService', () => ({
-  getDeploymentInfo: jest.fn().mockResolvedValue({
-    deployId: 'test-deploy-123',
-    deployDetails: 'Test deployment'
-  })
-}));
 
 test('should fetch GitHub Actions logs, detect differences, and notify Slack', async () => {
     // Step 1: Fetch and store logs from GitHub Actions
