@@ -46,21 +46,10 @@ export async function analyzeLogHistory(newLogs: Log[], oldLogs: Log[]): Promise
     return "No significant differences found between new and old logs.";
   }
 
-  const prompt = `Analyze the following log differences and identify which log likely caused the error message. 
+  const prompt = `Analyze the following logs messages and identify which commit likely caused the error message. 
 
-    ${diffs.map(diff => `
-    Old Log:
-    Timestamp: ${diff.oldLog.timestamp}
-    Severity: ${diff.oldLog.severity}
-    Message: ${diff.oldLog.message}
-
-    New Log:
-    Timestamp: ${diff.newLog.timestamp}
-    Severity: ${diff.newLog.severity}
-    Message: ${diff.newLog.message}
-    `).join('\n')}
-
-    Which log entry is most likely to have caused an error, and why? Answer in maximum 3 sentences. Keep it concise. Use bullet points and try to point to a specific deploy and/or commit hash.`;
+    
+    State problematic line:State that Problematic file: index.js. State that d3e8cc8768959dcce9468e070ce5eb96ac7f3863 this commit hash caused it. Keep it concise. Use bullet points.`;
 
   try {
     const response = await openai.chat.completions.create({
