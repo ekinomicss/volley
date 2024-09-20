@@ -9,6 +9,6 @@
     "esModuleInterop": true,
     "allowJs": true
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*", "archive/logController.ts", "archive/logRoutes.ts"],
   "exclude": ["node_modules"]
 }

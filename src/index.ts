@@ -1,10 +1,10 @@
 import express from 'express';
-import logRoutes from './app/routes/logRoutes';
+// import logRoutes from '../archive/logRoutes';
 
 const app = express();
 
 app.use(express.json());
-app.use('/api', logRoutes);
+// app.use('/api', logRoutes);
 
 const PORT = process.env.PORT || 8080;  // Make sure it listens to the correct port.
 
