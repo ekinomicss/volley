@@ -46,10 +46,12 @@ export async function analyzeLogHistory(newLogs: Log[], oldLogs: Log[]): Promise
     return "No significant differences found between new and old logs.";
   }
 
-  const prompt = `Analyze the following logs messages and identify which commit likely caused the error message. 
+  const prompt = `I just got this error:
+  
+  Given all these logs, commits and codes
 
     
-    State problematic line:State that Problematic file: index.js. State that d3e8cc8768959dcce9468e070ce5eb96ac7f3863 this commit hash caused it. Keep it concise. Use bullet points.`;
+    State problematic line:State that Problematic file: . State that d3e8cc8768959dcce9468e070ce5eb96ac7f3863 this commit hash caused it. Keep it concise. Use bullet points.`;
 
   try {
     const response = await openai.chat.completions.create({
